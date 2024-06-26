@@ -1,0 +1,245 @@
+[
+  {
+    "name": "add_class",
+    "description": "Add a class to the game",
+    "parameters": {
+      "class": "The class id, a short string",
+      "purpose": "What is the purpose of this class? Why are there multiple objects, locations, or creatures that share this behavior or algorithm?",
+      "criteria": "What is the criteria by which an object, location, or creature is considered to be a member of this class?",
+      "entity_types": {
+        "type": "array",
+        "description": "The types of entities that can be members of this class",
+        "items": {
+          "type": "string",
+          "enum": ["object", "location", "door", "creature"]
+        }
+      }
+    }
+  },
+  {
+    "name": "add_player",
+    "description": "Add a player to the game",
+    "parameters": {
+      "player": {
+        "type": "object",
+        "description": "The player object. (Note type: player and id: player are implied)",
+        "location": "The id of the initial location of the player",
+        "props": {
+          "type": "object",
+          "description": "Any properties of the player, and their initial state."
+        }
+      }
+    }
+  },
+  {
+    "name": "add_location",
+    "description": "Add a location to the game",
+    "parameters": {
+      "location": {
+        "type": "object",
+        "description": "The location object. (Note type: location is implied)",
+        "properties": {
+          "id": "The id of the location",
+          "name": "A short name for the location",
+          "description": "A longer description of the location",
+          "short_description*": "A short (one-sentence) description of the location",
+          "classes*": {
+            "type": "array",
+            "description": "Classes of locations are typically regions, or locations that share common behavior or algorithms",
+            "items": "The ids of the classes the location belongs to"
+          },
+          "connections": {
+            "type": "object",
+            "description": "The connections from this location to any other locations. Each key is the id of another location",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "direction": "The direction (north/south/etc) or other term used to describe the connection. You can include multiple directions in a single string, separated by commas.",
+                "notes*": {
+                  "type": "array",
+                  "description": "Any notes about the connection to control the game engine",
+                  "items": "One rule, restriction, or other note about the connection"
+                }
+              }
+            }
+          },
+          "props*": {
+            "type": "object",
+            "description": "Any properties of the location, and their initial state."
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "add_object",
+    "description": "Add an object to the game",
+    "parameters": {
+      "object": {
+        "type": "object",
+        "description": "The object. (Note type: object is implied)",
+        "properties": {
+          "id": "The id of the object",
+          "name": "A short name for the object",
+          "description": "A longer description of the object",
+          "short_description*": "A short (one-sentence) description of the object",
+          "classes*": {
+            "type": "array",
+            "description": "Classes of objects are used when there are multiple objects that share common behavior or algorithms",
+            "items": "The ids of the classes the object belongs to"
+          },
+          "location": "The id of the location the object is in",
+          "notes*": {
+            "type": "array",
+            "description": "Any notes about the connection to control the game engine",
+            "items": "One rule, restriction, or other note about the connection"
+          },
+          "props*": {
+            "type": "object",
+            "description": "Any properties of the object, and their initial state."
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "add_door",
+    "description": "Add a door to the game. A door is anything that may block or regulate access to a location.",
+    "parameters": {
+      "door": {
+        "type": "object",
+        "description": "The door. (Note type: door is implied)",
+        "properties": {
+          "id": "The id of the door",
+          "name": "A short name for the door",
+          "description": "A longer description of the door",
+          "short_description*": "A short (one-sentence) description of the door",
+          "classes*": {
+            "type": "array",
+            "description": "Classes of doors are used when there are multiple doors that share common behavior or algorithms",
+            "items": "The ids of the classes the door belongs to"
+          },
+          "location": "The id of the location the door is in",
+          "other_location*": "The id of the location the door leads to",
+          "props*": {
+            "type": "object",
+            "description": "Any properties of the door, and their initial state."
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "add_creature",
+    "description": "Add a creature to the game",
+    "parameters": {
+      "creature": {
+        "type": "object",
+        "description": "The creature. (Note type: creature is implied)",
+        "properties": {
+          "id": "The id of the creature",
+          "name": "A short name for the creature",
+          "description": "A longer description of the creature",
+          "short_description*": "A short (one-sentence) description of the creature",
+          "classes*": {
+            "type": "array",
+            "description": "Classes of creatures are used when there are multiple creatures that share common behavior or algorithms",
+            "items": "The ids of the classes the creature belongs to"
+          },
+          "location": "The id of the location the creature is in",
+          "notes*": {
+            "type": "array",
+            "description": "Any notes about the connection to control the game engine",
+            "items": "One rule, restriction, or other note about the connection"
+          },
+          "props*": {
+            "type": "object",
+            "description": "Any properties of the creature, and their initial state."
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "add_algorithm",
+    "description": "Add an algorithm to the game",
+    "parameters": {
+      "algorithm": {
+        "type": "object",
+        "description": "The algorithm. (Note type: algorithm is implied)",
+        "properties": {
+          "id": "The id of the algorithm",
+          "name*": "A short name for the algorithm",
+          "relevant": {
+            "type": "array",
+            "description": "The objects, locations, and creatures that the algorithm is relevant to; this is used to determine when the algorithm should be addressed. If ANY of the items in this list show the algorithm as relevant, then the algorithm will be run.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "location*": {
+                  "ids*": {
+                    "type": "array",
+                    "description": "The ids of the locations the algorithm is relevant to"
+                  },
+                  "classes*": {
+                    "type": "array",
+                    "description": "If any of the classes are present in the current location, the algorithm is relevant"
+                  },
+                  "props*": {
+                    "type": "object",
+                    "description": "The properties of the locations the algorithm is relevant to"
+                  }
+                },
+                "player*": {
+                  "inventory": {
+                    "type": "array",
+                    "description": "The ids of the objects in the player's inventory the algorithm is relevant to"
+                  },
+                  "not inventory": {
+                    "type": "array",
+                    "description": "The ids of the objects that must not be in the player's inventory for the algorithm to be relevant"
+                  },
+                  "props": {
+                    "type": "object",
+                    "description": "The properties of the player the algorithm is relevant to"
+                  }
+                }
+              }
+            },
+            "entities": {
+              "type": "array",
+              "description": "Other objects, creatures, or other entities that the algorithm is relevant to",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": "The type of entity the algorithm is relevant to",
+                  "ids": {
+                    "type": "array",
+                    "description": "The ids of the entities the algorithm is relevant to"
+                  },
+                  "classes*": {
+                    "type": "array",
+                    "description": "If any of the classes are present in the current entity, the algorithm is relevant"
+                  },
+                  "props": {
+                    "type": "object",
+                    "description": "The properties of the entities the algorithm is relevant to"
+                  }
+                }
+              }
+            }
+          },
+          "notes": {
+            "type": "array",
+            "description": "Any notes about the connection to control the game engine",
+            "items": "One rule, restriction, or other thing to note to the game engine"
+          },
+          "props*": {
+            "type": "object",
+            "description": "Any properties of the algorithm, and their initial state."
+          }
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,131 @@
+[
+  {
+    "name": "move_to",
+    "parameters": {
+      "location": "location id to move to. Be sure to check if it's possible to move to that location first."
+    }
+  },
+  {
+    "name": "pick_random",
+    "description": "Randomly pick an item or number.",
+    "parameters": {
+      "list*": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "distribution*": {
+        "type": "object",
+        "description": "Pick from a distribution of items. The keys are the items, and the values are the weights. The weights do not need to add up to 1.0, as they will be normalized.",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "range*": {
+        "type": "object",
+        "description": "Pick from a range of numbers, min-max inclusive",
+        "properties": {
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
+        }
+      },
+      "count*": {
+        "type": "number",
+        "description": "Number of items to pick. If not specified, only one item will be picked."
+      },
+      "allow_duplicates*": {
+        "type": "boolean",
+        "description": "If true and count>1 then an item or number can be picked more than once"
+      },
+      "purpose*": {
+        "type": "string",
+        "description": "For your own memory, describe the purpose of this random pick."
+      }
+    }
+  },
+  {
+    "name": "player_action",
+    "description": "Perform a standard player action",
+    "parameters": {
+      "take_object*": {
+        "description": "A list of object ids to take (move into inventory)",
+        "type": "array",
+        "items": "entity id"
+      },
+      "destroy": {
+        "description": "A list of entity ids to destroy (remove from the game)",
+        "type": "array",
+        "items": "entity id"
+      },
+      "drop_object": {
+        "description": "A list of object ids to drop (move from inventory to current location)",
+        "type": "array",
+        "items": "entity id"
+      },
+      "props*": {
+        "description": "Additional properties to set or change on the player entity",
+        "type": "object"
+      }
+    }
+  },
+  {
+    "name": "changes",
+    "description": "Apply changes to the game state and entities",
+    "parameters": {
+      "changes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Entity type",
+              "enum": ["player", "location", "object", "creature", "algorithm"]
+            },
+            "id": "Entity id to apply changes to",
+            "props*": {
+              "type": "object",
+              "description": "Properties to set or change on the entity"
+            },
+            "location*": "Move the entity to the new location (\"inventory\" for player inventory)",
+            "append_notes*": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Add the notes to the entity"
+            },
+            "remove_notes*": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Remove the notes from the entity"
+            },
+            "description*": "Change the description of the entity",
+            "short_description*": "Change the short description of the entity",
+            "name*": "Change the name of the entity",
+            "change_connections*": {
+              "type": "object",
+              "description": "Change the connections of the location. Each key is a destination location id. Set a location to null to remove the connection.",
+              "additionalProperties": {
+                "type": "object",
+                "direction": "The direction (north/south/etc) or other term used to describe the connection. You can include multiple names for the direction in a single string, separated by commas.",
+                "notes*": {
+                  "type": "array",
+                  "description": "Any notes about the connection to control the game engine",
+                  "items": "One rule, restriction, or other note about the connection"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]
